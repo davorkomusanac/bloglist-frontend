@@ -2,8 +2,13 @@ import axios from "axios";
 const baseUrl = "/api/login";
 
 const login = async (credentials) => {
-  const request = axios.get(baseUrl);
-  return request.then((response) => response.data);
+  const res = await axios.post(baseUrl, credentials);
+  console.log(res);
+  return res.data;
 };
 
-export default { getAll };
+const loginService = {
+  login,
+};
+
+export default loginService;
