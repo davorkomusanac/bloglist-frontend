@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
+import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
-import loginService from "./services/login";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const blogFormRef = useRef();
 
@@ -34,26 +32,6 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
-    try {
-      const user = await loginService.login({ username, password });
-
-      blogService.setToken(user.token);
-      window.localStorage.setItem("loggedInUser", JSON.stringify(user));
-      setUser(user);
-      console.log(`USER CALLED ${user.id}`);
-      setUsername("");
-      setPassword("");
-    } catch (e) {
-      setErrorMessage(e.response.data.error);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
-  };
-
   const handleLogout = () => {
     window.localStorage.removeItem("loggedInUser");
     setUser(null);
@@ -77,34 +55,8 @@ const App = () => {
   };
 
   const handleBlogDeletion = (blogToDelete) => {
-    console.log(blogToDelete);
     setBlogs(blogs.filter((el) => el.id !== blogToDelete.id));
   };
-
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <h2>log in to application</h2>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="text"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  );
 
   const blogsForm = () => (
     <>
@@ -132,7 +84,14 @@ const App = () => {
   return (
     <div>
       <h3>{errorMessage}</h3>
-      {user === null ? loginForm() : blogsForm()}
+      {user === null ? (
+        <LoginForm
+          handleUser={(user) => setUser(user)}
+          handleError={(error) => setErrorMessage(error)}
+        />
+      ) : (
+        blogsForm()
+      )}
     </div>
   );
 };
