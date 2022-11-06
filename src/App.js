@@ -76,6 +76,7 @@ const App = () => {
           initialBlog={blog}
           user={user}
           handleBlogDeletion={handleBlogDeletion}
+          updateLikes={(id, newObject) => blogService.update(id, newObject)}
         />
       ))}
     </>

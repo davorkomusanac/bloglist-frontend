@@ -1,7 +1,7 @@
 import { useState } from "react";
 import blogService from "./../services/blogs";
 
-const Blog = ({ initialBlog, user, handleBlogDeletion }) => {
+const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -21,7 +21,7 @@ const Blog = ({ initialBlog, user, handleBlogDeletion }) => {
 
   const updateBlogLikes = (event) => {
     event.preventDefault();
-    blogService.update(blog.id, {
+    updateLikes(blog.id, {
       likes: blog.likes + 1,
     });
     setBlog({ ...blog, likes: blog.likes + 1 });
@@ -36,12 +36,13 @@ const Blog = ({ initialBlog, user, handleBlogDeletion }) => {
   };
 
   return (
-    <div style={blogStyle}>
-      <div style={hideWhenVisible}>
+    <div style={blogStyle} className="blog">
+      <div style={hideWhenVisible} className="hiddenBlogTest">
         {blog.title} {blog.author}
         <button onClick={toggleVisibility}>view</button>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className="expandedBlogTest">
+        <h1>{blog.url}</h1>
         {blog.title} <button onClick={toggleVisibility}>hide</button>
         <br />
         {blog.url}
