@@ -6,6 +6,7 @@ import "@testing-library/jest-dom/extend-expect";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Blog from "./Blog";
+import BlogForm from "./BlogForm";
 
 describe("<Blog />", () => {
   let container;
@@ -71,4 +72,24 @@ describe("<Blog />", () => {
     await user.click(likeButton);
     expect(mockHandler.mock.calls).toHaveLength(2);
   });
+});
+
+test("<BlogForm /> updates state and calls onSubmit", async () => {
+  const handleBlogCreationMock = jest.fn();
+  const user = userEvent.setup();
+
+  render(<BlogForm handleCreateBlog={handleBlogCreationMock} />);
+
+  const titleInput = screen.getByRole("textbox", { name: "Title" });
+  const authorInput = screen.getByRole("textbox", { name: "Author" });
+  const urlInput = screen.getByRole("textbox", { name: "Url" });
+  const sendButton = screen.getByText("create");
+
+  await user.type(titleInput, "Titlee");
+  await user.type(authorInput, "Authorr");
+  await user.type(urlInput, "www.url.com");
+  await user.click(sendButton);
+
+  expect(handleBlogCreationMock.mock.calls).toHaveLength(1);
+  expect(handleBlogCreationMock.mock.calls[0][0].title).toBe("Titlee");
 });
