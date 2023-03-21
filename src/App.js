@@ -4,6 +4,7 @@ import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
+import React from "react";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -37,7 +38,7 @@ const App = () => {
     setUser(null);
   };
 
-  const handleCreateBlog = async (newBlog) => {
+  const handleCreateBlog = async newBlog => {
     try {
       const savedBlog = await blogService.create(newBlog);
       blogFormRef.current.toggleVisibility();
@@ -54,8 +55,8 @@ const App = () => {
     }
   };
 
-  const handleBlogDeletion = (blogToDelete) => {
-    setBlogs(blogs.filter((el) => el.id !== blogToDelete.id));
+  const handleBlogDeletion = blogToDelete => {
+    setBlogs(blogs.filter(el => el.id !== blogToDelete.id));
   };
 
   const blogsForm = () => (
@@ -70,7 +71,7 @@ const App = () => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm handleCreateBlog={handleCreateBlog} />
       </Togglable>
-      {blogs.map((blog) => (
+      {blogs.map(blog => (
         <Blog
           key={blog.id}
           initialBlog={blog}
@@ -87,8 +88,8 @@ const App = () => {
       <h3>{errorMessage}</h3>
       {user === null ? (
         <LoginForm
-          handleUser={(user) => setUser(user)}
-          handleError={(error) => setErrorMessage(error)}
+          handleUser={user => setUser(user)}
+          handleError={error => setErrorMessage(error)}
         />
       ) : (
         blogsForm()

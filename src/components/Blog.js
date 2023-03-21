@@ -1,5 +1,6 @@
 import { useState } from "react";
 import blogService from "./../services/blogs";
+import React from "react";
 
 const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
   const blogStyle = {
@@ -19,7 +20,7 @@ const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
     setVisible(!visible);
   };
 
-  const updateBlogLikes = (event) => {
+  const updateBlogLikes = event => {
     event.preventDefault();
     updateLikes(blog.id, {
       likes: blog.likes + 1,
@@ -27,7 +28,7 @@ const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
     setBlog({ ...blog, likes: blog.likes + 1 });
   };
 
-  const deleteBlog = (event) => {
+  const deleteBlog = event => {
     event.preventDefault();
     if (window.confirm(`Remove ${blog.title} by ${blog.author}`)) {
       blogService.deleteBlog(blog.id);
@@ -47,12 +48,17 @@ const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
         <br />
         {blog.url}
         <br />
-        likes {blog.likes} <button onClick={updateBlogLikes}>like</button>
+        likes {blog.likes}{" "}
+        <button id="like" onClick={updateBlogLikes}>
+          like
+        </button>
         <br />
         {blog.author}
         <br />
         {blog.user !== null && blog.user.id === user.id ? (
-          <button onClick={deleteBlog}>delete</button>
+          <button id="delete" onClick={deleteBlog}>
+            delete
+          </button>
         ) : null}
       </div>
     </div>
