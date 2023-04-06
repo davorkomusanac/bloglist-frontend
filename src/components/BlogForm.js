@@ -1,22 +1,31 @@
 import { useState } from "react";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { setNotification } from "../reducers/notificationReducer";
+/* eslint-disable react/prop-types */
 
 const BlogForm = ({ handleCreateBlog }) => {
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
+  const dispatch = useDispatch();
 
-  const createBlog = event => {
+  const createBlog = async event => {
     event.preventDefault();
-    handleCreateBlog({
-      title,
-      author,
-      url,
-    });
+    try {
+      await handleCreateBlog({
+        title,
+        author,
+        url,
+      });
 
-    setAuthor("");
-    setTitle("");
-    setUrl("");
+      dispatch(setNotification(`${title} by ${author} added`, 5));
+      setAuthor("");
+      setTitle("");
+      setUrl("");
+    } catch (e) {
+      dispatch(setNotification(e.response.data.error, 5));
+    }
   };
 
   return (

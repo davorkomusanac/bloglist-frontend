@@ -1,6 +1,9 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import blogService from "./../services/blogs";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { setNotification } from "../reducers/notificationReducer";
 
 const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
   const blogStyle = {
@@ -15,6 +18,7 @@ const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
   const [blog, setBlog] = useState(initialBlog);
   const hideWhenVisible = { display: visible ? "none" : "" };
   const showWhenVisible = { display: visible ? "" : "none" };
+  const dispatch = useDispatch();
 
   const toggleVisibility = () => {
     setVisible(!visible);
@@ -26,6 +30,7 @@ const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
       likes: blog.likes + 1,
     });
     setBlog({ ...blog, likes: blog.likes + 1 });
+    dispatch(setNotification(`You upvoted ${blog.title}!`, 5));
   };
 
   const deleteBlog = event => {
@@ -33,6 +38,7 @@ const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
     if (window.confirm(`Remove ${blog.title} by ${blog.author}`)) {
       blogService.deleteBlog(blog.id);
       handleBlogDeletion(blog);
+      dispatch(setNotification(`You deleted ${blog.title}!`, 5));
     }
   };
 
@@ -55,7 +61,9 @@ const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
         <br />
         {blog.author}
         <br />
-        {blog.user !== null && blog.user.id === user.id ? (
+        {blog.user !== null &&
+        //When creating first time blog, blog.user is not populated and is not an object but just user id
+        (blog.user === user.id || blog.user.id === user.id) ? (
           <button id="delete" onClick={deleteBlog}>
             delete
           </button>

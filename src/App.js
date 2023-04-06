@@ -5,11 +5,11 @@ import LoginForm from "./components/LoginForm";
 import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import React from "react";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
   const blogFormRef = useRef();
 
   useEffect(() => {
@@ -43,15 +43,8 @@ const App = () => {
       const savedBlog = await blogService.create(newBlog);
       blogFormRef.current.toggleVisibility();
       setBlogs(blogs.concat(savedBlog));
-      setErrorMessage(`${savedBlog.title} by ${savedBlog.author} added`);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
     } catch (e) {
-      setErrorMessage(e.response.data.error);
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      throw e;
     }
   };
 
@@ -85,12 +78,9 @@ const App = () => {
 
   return (
     <div>
-      <h3>{errorMessage}</h3>
+      <Notification />
       {user === null ? (
-        <LoginForm
-          handleUser={user => setUser(user)}
-          handleError={error => setErrorMessage(error)}
-        />
+        <LoginForm handleUser={user => setUser(user)} />
       ) : (
         blogsForm()
       )}
