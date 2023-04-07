@@ -1,12 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import blogService from "./../services/blogs";
-import loginService from "./../services/login";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
+import { loginUser } from "../reducers/userReducer";
 
-const LoginForm = ({ handleUser }) => {
+const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
@@ -14,14 +13,10 @@ const LoginForm = ({ handleUser }) => {
   const handleLogin = async event => {
     event.preventDefault();
     try {
-      const user = await loginService.login({ username, password });
-
-      blogService.setToken(user.token);
-      window.localStorage.setItem("loggedInUser", JSON.stringify(user));
-      handleUser(user);
+      dispatch(loginUser({ username, password }));
       setUsername("");
       setPassword("");
-      dispatch(setNotification(`Welcome back, ${user.name}!`, 5));
+      dispatch(setNotification(`Welcome back, ${username}!`, 5));
     } catch (e) {
       dispatch(setNotification(e.response.data.error, 5));
     }

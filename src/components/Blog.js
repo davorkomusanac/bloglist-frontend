@@ -9,6 +9,7 @@ const Blog = ({ blog, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
+    paddingBottom: 10,
     border: "solid",
     borderWidth: 1,
     marginBottom: 5,

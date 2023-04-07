@@ -8,11 +8,12 @@ import React from "react";
 import Notification from "./components/Notification";
 import { useDispatch, useSelector } from "react-redux";
 import { createBlog, getBlogs } from "./reducers/blogsReducer";
+import { checkUser, logoutUser } from "./reducers/userReducer";
 
 const App = () => {
-  const [user, setUser] = useState(null);
   const blogFormRef = useRef();
   const dispatch = useDispatch();
+  const user = useSelector(({ user }) => user);
   const blogs = useSelector(({ blogs }) => blogs);
 
   useEffect(() => {
@@ -20,17 +21,11 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const loggedInUser = window.localStorage.getItem("loggedInUser");
-    if (loggedInUser) {
-      const user = JSON.parse(loggedInUser);
-      setUser(user);
-      blogService.setToken(user.token);
-    }
+    dispatch(checkUser());
   }, []);
 
   const handleLogout = () => {
-    window.localStorage.removeItem("loggedInUser");
-    setUser(null);
+    dispatch(logoutUser());
   };
 
   const handleCreateBlog = async newBlog => {
@@ -63,11 +58,7 @@ const App = () => {
   return (
     <div>
       <Notification />
-      {user === null ? (
-        <LoginForm handleUser={user => setUser(user)} />
-      ) : (
-        blogsForm()
-      )}
+      {user === null ? <LoginForm /> : blogsForm()}
     </div>
   );
 };
