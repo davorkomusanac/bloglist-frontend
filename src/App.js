@@ -6,22 +6,17 @@ import Togglable from "./components/Togglable";
 import blogService from "./services/blogs";
 import React from "react";
 import Notification from "./components/Notification";
+import { useDispatch, useSelector } from "react-redux";
+import { createBlog, getBlogs } from "./reducers/blogsReducer";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const blogFormRef = useRef();
+  const dispatch = useDispatch();
+  const blogs = useSelector(({ blogs }) => blogs);
 
   useEffect(() => {
-    const fetchBlogs = async () => {
-      const blogs = await blogService.getAll();
-
-      function compareNum(a, b) {
-        return b.likes - a.likes;
-      }
-      setBlogs(blogs.sort(compareNum));
-    };
-    fetchBlogs();
+    dispatch(getBlogs());
   }, []);
 
   useEffect(() => {
@@ -40,16 +35,11 @@ const App = () => {
 
   const handleCreateBlog = async newBlog => {
     try {
-      const savedBlog = await blogService.create(newBlog);
       blogFormRef.current.toggleVisibility();
-      setBlogs(blogs.concat(savedBlog));
+      dispatch(createBlog(newBlog));
     } catch (e) {
       throw e;
     }
-  };
-
-  const handleBlogDeletion = blogToDelete => {
-    setBlogs(blogs.filter(el => el.id !== blogToDelete.id));
   };
 
   const blogsForm = () => (
@@ -65,13 +55,7 @@ const App = () => {
         <BlogForm handleCreateBlog={handleCreateBlog} />
       </Togglable>
       {blogs.map(blog => (
-        <Blog
-          key={blog.id}
-          initialBlog={blog}
-          user={user}
-          handleBlogDeletion={handleBlogDeletion}
-          updateLikes={(id, newObject) => blogService.update(id, newObject)}
-        />
+        <Blog key={blog.id} blog={blog} user={user} />
       ))}
     </>
   );

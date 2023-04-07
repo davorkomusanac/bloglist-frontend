@@ -1,11 +1,11 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
-import blogService from "./../services/blogs";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
+import { deleteBlog, upvoteBlog } from "../reducers/blogsReducer";
 
-const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
+const Blog = ({ blog, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -15,7 +15,6 @@ const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
   };
 
   const [visible, setVisible] = useState(false);
-  const [blog, setBlog] = useState(initialBlog);
   const hideWhenVisible = { display: visible ? "none" : "" };
   const showWhenVisible = { display: visible ? "" : "none" };
   const dispatch = useDispatch();
@@ -26,21 +25,19 @@ const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
 
   const updateBlogLikes = event => {
     event.preventDefault();
-    updateLikes(blog.id, {
-      likes: blog.likes + 1,
-    });
-    setBlog({ ...blog, likes: blog.likes + 1 });
+    dispatch(upvoteBlog(blog));
     dispatch(setNotification(`You upvoted ${blog.title}!`, 5));
   };
 
-  const deleteBlog = event => {
+  const handleDeleteBlog = event => {
     event.preventDefault();
     if (window.confirm(`Remove ${blog.title} by ${blog.author}`)) {
-      blogService.deleteBlog(blog.id);
-      handleBlogDeletion(blog);
+      dispatch(deleteBlog(blog));
       dispatch(setNotification(`You deleted ${blog.title}!`, 5));
     }
   };
+
+  if (!blog) return null;
 
   return (
     <div style={blogStyle} className="blog">
@@ -64,7 +61,7 @@ const Blog = ({ initialBlog, user, handleBlogDeletion, updateLikes }) => {
         {blog.user !== null &&
         //When creating first time blog, blog.user is not populated and is not an object but just user id
         (blog.user === user.id || blog.user.id === user.id) ? (
-          <button id="delete" onClick={deleteBlog}>
+          <button id="delete" onClick={handleDeleteBlog}>
             delete
           </button>
         ) : null}
