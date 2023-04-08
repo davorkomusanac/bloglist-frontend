@@ -2,13 +2,16 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { checkUser, logoutUser } from "../reducers/userReducer";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const user = useSelector(({ user }) => user);
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    navigate("/");
   };
 
   useEffect(() => {
@@ -16,17 +19,6 @@ const Header = () => {
   }, []);
 
   if (user === null) return null;
-
-  // const titleStyle = {
-  //   textDecoration: "none",
-  //   color: "black",
-  //   ":hover": {
-  //     color: "black",
-  //   },
-  //   ":active": {
-  //     color: "black",
-  //   },
-  // };
 
   const headerStyle = {
     marginRight: 10,

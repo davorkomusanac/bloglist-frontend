@@ -6,10 +6,11 @@ import Header from "./components/Header";
 import Notification from "./components/Notification";
 import User from "./components/User";
 import Blog from "./components/Blog";
+import { Container } from "@mui/material";
 
 const App = () => {
   return (
-    <div>
+    <Container>
       <Notification />
       <Header />
       <Routes>
@@ -18,7 +19,7 @@ const App = () => {
         <Route path="/users" element={<Users />} />
         <Route path="/" element={<Home />} />
       </Routes>
-    </div>
+    </Container>
   );
 };
 

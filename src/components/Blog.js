@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { getSpecificBlog } from "../reducers/blogsReducer";
 import { checkUser } from "../reducers/userReducer";
 import { useEffect } from "react";
+import { TextField, Button } from "@mui/material";
 
 const Blog = () => {
   const id = useParams().id;
@@ -84,7 +85,7 @@ const Comments = ({ blog }) => {
   const handleSubmitComment = event => {
     event.preventDefault();
     const comment = event.target.comment.value;
-    dispatch(createSpecificBlogComment(blog.id, comment));
+    if (comment !== "") dispatch(createSpecificBlogComment(blog.id, comment));
     event.target.comment.value = "";
   };
 
@@ -92,8 +93,10 @@ const Comments = ({ blog }) => {
     <div>
       <h4>comments</h4>
       <form onSubmit={handleSubmitComment}>
-        <input name="comment" />
-        <button type="submit">add comment</button>
+        <TextField label="comment" name="comment" />
+        <Button variant="contained" color="primary" type="submit">
+          add comment
+        </Button>
       </form>
       <ul>
         {blog.comments.map(comment => (
