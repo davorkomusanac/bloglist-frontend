@@ -2,7 +2,11 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
-import { deleteBlog, upvoteBlog } from "../reducers/blogsReducer";
+import {
+  createSpecificBlogComment,
+  deleteBlog,
+  upvoteBlog,
+} from "../reducers/blogsReducer";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getSpecificBlog } from "../reducers/blogsReducer";
@@ -66,8 +70,36 @@ const Blog = () => {
           delete
         </button>
       ) : null}
+      <h4>comments</h4>
+      <Comments blog={blog} />
     </div>
   );
 };
 
 export default Blog;
+
+const Comments = ({ blog }) => {
+  const dispatch = useDispatch();
+
+  const handleSubmitComment = event => {
+    event.preventDefault();
+    const comment = event.target.comment.value;
+    dispatch(createSpecificBlogComment(blog.id, comment));
+    event.target.comment.value = "";
+  };
+
+  return (
+    <div>
+      <h4>comments</h4>
+      <form onSubmit={handleSubmitComment}>
+        <input name="comment" />
+        <button type="submit">add comment</button>
+      </form>
+      <ul>
+        {blog.comments.map(comment => (
+          <li key={comment}>{comment}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};

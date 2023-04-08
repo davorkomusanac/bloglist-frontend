@@ -64,6 +64,16 @@ const blogsSlice = createSlice({
 
       return newState;
     },
+    createSpecificBlogComment(state, action) {
+      const newState = {
+        ...state,
+        specificBlog: action.payload,
+        errorMessage: "",
+      };
+
+      return newState;
+    },
+
     setErrorMessage(state, action) {
       const newState = {
         ...state,
@@ -116,6 +126,18 @@ export const getSpecificBlog = id => {
     try {
       const blog = await blogService.getSpecificBlog(id);
       dispatch(blogsSlice.actions.getSpecificBlog(blog));
+    } catch (error) {
+      console.log(error.response.data.error);
+      dispatch(blogsSlice.actions.setErrorMessage(error.response.data.error));
+    }
+  };
+};
+
+export const createSpecificBlogComment = (id, comment) => {
+  return async dispatch => {
+    try {
+      const updatedBlog = await blogService.createBlogComment(id, comment);
+      dispatch(blogsSlice.actions.createSpecificBlogComment(updatedBlog));
     } catch (error) {
       console.log(error.response.data.error);
       dispatch(blogsSlice.actions.setErrorMessage(error.response.data.error));
