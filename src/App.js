@@ -5,6 +5,7 @@ import Users from "./Users";
 import Header from "./components/Header";
 import Notification from "./components/Notification";
 import User from "./components/User";
+import Blog from "./components/Blog";
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
       <Notification />
       <Header />
       <Routes>
+        <Route path="/blogs/:id" element={<Blog />} />
         <Route path="/users/:id" element={<User />} />
         <Route path="/users" element={<Users />} />
         <Route path="/" element={<Home />} />

@@ -1,28 +1,30 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
 import { deleteBlog, upvoteBlog } from "../reducers/blogsReducer";
+import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { getSpecificBlog } from "../reducers/blogsReducer";
+import { checkUser } from "../reducers/userReducer";
+import { useEffect } from "react";
 
-const Blog = ({ blog, user }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    paddingBottom: 10,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
-  const [visible, setVisible] = useState(false);
-  const hideWhenVisible = { display: visible ? "none" : "" };
-  const showWhenVisible = { display: visible ? "" : "none" };
+const Blog = () => {
+  const id = useParams().id;
   const dispatch = useDispatch();
+  const [blog, errorMessage] = useSelector(({ blogs }) => [
+    blogs.specificBlog,
+    blogs.errorMessage,
+  ]);
+  const user = useSelector(({ user }) => user);
 
-  const toggleVisibility = () => {
-    setVisible(!visible);
-  };
+  useEffect(() => {
+    dispatch(getSpecificBlog(id));
+  }, [id]);
+
+  useEffect(() => {
+    dispatch(checkUser());
+  }, []);
 
   const updateBlogLikes = event => {
     event.preventDefault();
@@ -37,36 +39,33 @@ const Blog = ({ blog, user }) => {
       dispatch(setNotification(`You deleted ${blog.title}!`, 5));
     }
   };
+  if (errorMessage) return <div>{errorMessage}</div>;
 
-  if (!blog) return null;
+  if (!blog || blog.id !== id) return null;
 
   return (
-    <div style={blogStyle} className="blog">
-      <div style={hideWhenVisible} className="hiddenBlogTest">
-        {blog.title} {blog.author}
-        <button onClick={toggleVisibility}>view</button>
-      </div>
-      <div style={showWhenVisible} className="expandedBlogTest">
-        <h1>{blog.url}</h1>
-        {blog.title} <button onClick={toggleVisibility}>hide</button>
-        <br />
-        {blog.url}
-        <br />
-        likes {blog.likes}{" "}
-        <button id="like" onClick={updateBlogLikes}>
-          like
+    <div>
+      <h1>{blog.url}</h1>
+      {blog.title}
+      <br />
+      {blog.url}
+      <br />
+      likes {blog.likes}{" "}
+      <button id="like" onClick={updateBlogLikes}>
+        like
+      </button>
+      <br />
+      {blog.author}
+      <br />
+      added by {blog.user.name}
+      <br />
+      {blog.user !== null &&
+      //When creating first time blog, blog.user is not populated and is not an object but just user id
+      (blog.user === user.id || blog.user.id === user.id) ? (
+        <button id="delete" onClick={handleDeleteBlog}>
+          delete
         </button>
-        <br />
-        {blog.author}
-        <br />
-        {blog.user !== null &&
-        //When creating first time blog, blog.user is not populated and is not an object but just user id
-        (blog.user === user.id || blog.user.id === user.id) ? (
-          <button id="delete" onClick={handleDeleteBlog}>
-            delete
-          </button>
-        ) : null}
-      </div>
+      ) : null}
     </div>
   );
 };
