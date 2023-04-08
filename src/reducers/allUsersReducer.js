@@ -21,7 +21,7 @@ const allUsersSlice = createSlice({
     },
     getSingleUser(state, action) {
       const newState = {
-        ...state.users,
+        ...state,
         singleUser: action.payload,
         errorMessage: "",
       };

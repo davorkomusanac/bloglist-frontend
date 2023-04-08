@@ -17,37 +17,46 @@ const Header = () => {
 
   if (user === null) return null;
 
-  const titleStyle = {
-    textDecoration: "none",
-    color: "black",
-    ":hover": {
-      color: "black",
-    },
-    ":active": {
-      color: "black",
-    },
-  };
+  // const titleStyle = {
+  //   textDecoration: "none",
+  //   color: "black",
+  //   ":hover": {
+  //     color: "black",
+  //   },
+  //   ":active": {
+  //     color: "black",
+  //   },
+  // };
 
   const headerStyle = {
-    fontSize: "1.5rem",
-    fontWeight: "bold",
-    marginBottom: 10,
-    display: "inline-block",
+    marginRight: 10,
   };
 
   const logoutDivStyle = {
-    paddingBottom: 10,
+    display: "inline-block",
+  };
+
+  const logoutButtonStyle = {
+    marginLeft: 10,
+  };
+
+  const mainHeaderStyle = {
+    padding: "10px",
+    marginBottom: "10px",
+    backgroundColor: "#f2f2f2",
   };
 
   return (
-    <div>
-      <Link to="/" style={titleStyle}>
-        <span style={headerStyle}>blogs</span>
+    <div style={mainHeaderStyle}>
+      <Link to="/" style={headerStyle}>
+        blogs
+      </Link>
+      <Link to="/users" style={headerStyle}>
+        users
       </Link>
       <div style={logoutDivStyle}>
         {user.name} logged in
-        <br />
-        <button type="button" onClick={handleLogout}>
+        <button type="button" onClick={handleLogout} style={logoutButtonStyle}>
           logout
         </button>
       </div>
